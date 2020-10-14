@@ -5,6 +5,7 @@ const port = 3000;
 const swaggerjsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const cors = require("cors");
+const axios = require("axios").default;
 
 const options = {
   swaggerDefinition: {
@@ -471,6 +472,36 @@ app.delete("/company/:compId", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /say:
+ *   get:
+ *     description: returns the given word by adding koushik says in front.
+ *     parameters:
+ *       - name: keyword
+ *         in: query
+ *         type: string
+ *         required: true
+ *     responses:
+ *       '200':
+ *         description: OK
+ */
+app.get("/say", async (req, res) => {
+  // console.log("entering in say " + req.query.keyword);
+  try {
+    const message = await axios.get(
+      "https://lym0b3lwji.execute-api.us-east-1.amazonaws.com/v1/say?keyword=" +
+        req.query.keyword
+    );
+
+    res.send(message.data);
+  } catch (err) {
+    throw err;
+  } finally {
+    console.log("Successful!!");
+  }
+});
+
 app.listen(port, () => {
-  console.log("Example app listening at http://localhost:${port}");
+  console.log("Example app listening at http://localhost:" + port);
 });
